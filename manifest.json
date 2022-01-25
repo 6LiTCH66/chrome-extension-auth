@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "employeeAuthForm",
+  "version": "1.0.0",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["Content.js"]
+    }
+
+  ],
+  "browser_action":{
+    "default_popup": "popup.html"
+  },
+  "permissions":["storage","activeTab","tabs", "https://employee-webserver.herokuapp.com/", "http://*/", "https://*/"],
+  "background":{
+    "scripts":["background.js"]
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js; object-src 'self'"
+
+}
