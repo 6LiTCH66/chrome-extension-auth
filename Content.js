@@ -2,70 +2,117 @@ const loginButton = document.getElementById("loginButton")
 const registerButton = document.getElementById("registerButton")
 const logoutButton = document.getElementById("logoutButton")
 
-document.getElementById('loginForm').addEventListener('submit' ,event => {
-    event.preventDefault()
+if(document.getElementById('loginForm')){
+    document.getElementById('loginForm').addEventListener('submit' ,event => {
+        event.preventDefault()
 
-    const loginEmail = document.getElementById("loginName").value;
-    const loginPassword = document.getElementById("loginPassword").value;
+        const loginEmail = document.getElementById("loginName").value;
+        const loginPassword = document.getElementById("loginPassword").value;
 
 
-    if(loginEmail && loginPassword){
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        if(loginEmail && loginPassword){
             chrome.runtime.sendMessage({message: 'login', payload: {email:loginEmail, password:loginPassword}}, function (response){
                 if(!response.error){
                     document.getElementById("mainContainer").classList.add("d-none")
                     document.getElementById("logout").classList.remove("d-none")
                 }
                 else{
-                    document.getElementById("loginName").value = ''
-                    document.getElementById("loginPassword").value = ''
+
+                    var text = document.createTextNode(response.error);
+                    var errorMessage = document.getElementById("loginErrorMessage")
+                    errorMessage.classList.remove("d-none")
+                    errorMessage.innerHTML = ''
+                    errorMessage.appendChild(text);
+
+                    document.getElementById("loginForm").reset()
                 }
             })
-        })
 
-    }
-})
+        }
+    })
+}
 
+if(document.getElementById("registerForm")){
+    document.getElementById('registerForm').addEventListener('submit' ,event => {
+        event.preventDefault()
+
+        const registerEmail = document.getElementById("registerEmail").value;
+        const registerPassword = document.getElementById("registerPassword").value;
+
+        const registerCountry = document.getElementById("registerCountry").value;
+        const registerPhone = document.getElementById("registerPhone").value;
+        const registerFirstName = document.getElementById("registerFirstName").value;
+        const registerLastName = document.getElementById("registerLastName").value;
+
+
+        if(registerEmail && registerPassword && registerCountry && registerPhone && registerFirstName && registerLastName){
+            chrome.runtime.sendMessage({message: 'signup', payload: {email:registerEmail, password:registerPassword}}, function (response){
+
+                if(!response.error){
+                    document.getElementById("tab-login").click()
+                    document.getElementById("registerForm").reset()
+
+                }
+                else{
+
+                    var text = document.createTextNode(response.error);
+                    var errorMessage = document.getElementById("registerErrorMessage")
+                    errorMessage.classList.remove("d-none")
+                    errorMessage.innerHTML = ''
+                    errorMessage.appendChild(text);
+
+                    document.getElementById("registerForm").reset()
+                }
+            })
+        }
+
+
+    })
+}
 
 
 window.onload = function() {
     var user = localStorage.getItem("currentUser")
     if(!user){
-        document.getElementById("mainContainer").classList.remove("d-none")
-        document.getElementById("logout").classList.add("d-none")
-        localStorage.removeItem("currentUser");
+        if(document.getElementById("mainContainer")){
+            document.getElementById("mainContainer").classList.remove("d-none")
+            document.getElementById("logout").classList.add("d-none")
+        }
 
     }else {
-        document.getElementById("mainContainer").classList.add("d-none")
-        document.getElementById("logout").classList.remove("d-none")
-        localStorage.setItem("currentUser", JSON.stringify(user).replace(/\\/g, ''))
+        if(document.getElementById("mainContainer")){
+            document.getElementById("mainContainer").classList.add("d-none")
+            document.getElementById("logout").classList.remove("d-none")
+        }
 
-        //chrome.tabs.executeScript( null, {code: `localStorage.setItem("currentUser", ${JSON.stringify(result.currentUser).replace(/\\\\/g, '')})`});
     }
 
 }
 
 
+if(loginButton){
+    loginButton.addEventListener('click', ()=> {
 
-loginButton.addEventListener('click', ()=> {
-
-})
-
-
-registerButton.addEventListener('click', ()=> {
-
-})
-
-logoutButton.addEventListener('click', ()=> {
-
-    document.getElementById("mainContainer").classList.remove("d-none")
-    document.getElementById("logout").classList.add("d-none")
-
-    document.getElementById("loginName").value = ""
-    document.getElementById("loginPassword").value = ""
-    window.localStorage.removeItem("currentUser")
-
-    localStorage.removeItem("currentUser");
+    })
+}
 
 
-})
+if(registerButton){
+    registerButton.addEventListener('click', ()=> {
+
+    })
+}
+
+if(logoutButton){
+    logoutButton.addEventListener('click', ()=> {
+        chrome.runtime.sendMessage({message: 'logout'}, function (response){
+            if(!response.error){
+                document.getElementById("mainContainer").classList.remove("d-none")
+                document.getElementById("logout").classList.add("d-none")
+
+                document.getElementById("loginForm").reset()
+            }
+        })
+    })
+}
+

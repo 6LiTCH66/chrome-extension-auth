@@ -14,7 +14,7 @@
     <style>
         body{
             min-width:320px;
-            height:350px;
+            height:100%;
             font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
             padding:10px;
         }
@@ -56,6 +56,8 @@
         <form id="loginForm">
 
             <p class="text-center">Sign in</p>
+
+            <p class="text-danger d-none" style="text-align: center" id="loginErrorMessage"></p>
             <!-- Email input -->
             <div class="form-outline mb-4">
                 <input type="email" id="loginName" class="form-control" />
@@ -78,6 +80,7 @@
         <form id="registerForm">
 
             <p class="text-center">Sign up</p>
+            <p class="text-danger d-none" style="text-align: center" id="registerErrorMessage"></p>
 
             <!-- Email input -->
             <div class="form-outline mb-4">
@@ -91,15 +94,39 @@
                 <label class="form-label" for="registerPassword">Password</label>
             </div>
 
+            <!-- Country input -->
+            <div class="form-outline mb-4">
+                <input type="text" id="registerCountry" class="form-control" />
+                <label class="form-label" for="registerCountry">Country</label>
+            </div>
+
+            <!-- Telephone input -->
+            <div class="form-outline mb-4">
+                <input type="tel" id="registerPhone" class="form-control"/>
+                <label class="form-label" for="registerPhone">Phone</label>
+            </div>
+
+            <!-- First name input -->
+            <div class="form-outline mb-4">
+                <input type="text" id="registerFirstName" class="form-control" />
+                <label class="form-label" for="registerFirstName">First name</label>
+            </div>
+
+            <!-- Last name input -->
+            <div class="form-outline mb-4">
+                <input type="text" id="registerLastName" class="form-control" />
+                <label class="form-label" for="registerLastName">Last name</label>
+            </div>
+
             <!-- Submit button -->
-            <button type="submit" class="btn btn-primary btn-block mb-3" id="registerButton">Sign up</button>
+            <button type="submit" class="btn btn-primary btn-block mb-4" id="registerButton">Sign up</button>
         </form>
     </div>
 </div>
 </div>
 <!-- Pills content -->
 
-<div id="logout" class="d-none">
+<div id="logout" class="d-none" style="text-align: center">
     <button type="button" class="btn btn-primary" id="logoutButton">Logout</button>
 </div>
 
