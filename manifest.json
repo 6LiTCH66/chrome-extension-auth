@@ -13,7 +13,7 @@
   "browser_action":{
     "default_popup": "popup.html"
   },
-  "permissions":["cookies", "storage","activeTab","tabs", "https://employee-webserver.herokuapp.com/", "http://*/", "https://*/"],
+  "permissions":["cookies", "storage","activeTab","tabs", "https://employee-webserver.herokuapp.com/", "http://*/*", "https://*/*"],
   "background":{
     "scripts":["background.js"]
   },

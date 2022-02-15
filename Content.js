@@ -1,118 +1,100 @@
-const loginButton = document.getElementById("loginButton")
-const registerButton = document.getElementById("registerButton")
-const logoutButton = document.getElementById("logoutButton")
-
-if(document.getElementById('loginForm')){
-    document.getElementById('loginForm').addEventListener('submit' ,event => {
-        event.preventDefault()
-
-        const loginEmail = document.getElementById("loginName").value;
-        const loginPassword = document.getElementById("loginPassword").value;
-
-
-        if(loginEmail && loginPassword){
-            chrome.runtime.sendMessage({message: 'login', payload: {email:loginEmail, password:loginPassword}}, function (response){
-                if(!response.error){
-                    document.getElementById("mainContainer").classList.add("d-none")
-                    document.getElementById("logout").classList.remove("d-none")
-                }
-                else{
-
-                    var text = document.createTextNode(response.error);
-                    var errorMessage = document.getElementById("loginErrorMessage")
-                    errorMessage.classList.remove("d-none")
-                    errorMessage.innerHTML = ''
-                    errorMessage.appendChild(text);
-
-                    document.getElementById("loginForm").reset()
-                }
-            })
-
-        }
-    })
-}
-
-if(document.getElementById("registerForm")){
-    document.getElementById('registerForm').addEventListener('submit' ,event => {
-        event.preventDefault()
-
-        const registerEmail = document.getElementById("registerEmail").value;
-        const registerPassword = document.getElementById("registerPassword").value;
-
-        const registerCountry = document.getElementById("registerCountry").value;
-        const registerPhone = document.getElementById("registerPhone").value;
-        const registerFirstName = document.getElementById("registerFirstName").value;
-        const registerLastName = document.getElementById("registerLastName").value;
-
-
-        if(registerEmail && registerPassword && registerCountry && registerPhone && registerFirstName && registerLastName){
-            chrome.runtime.sendMessage({message: 'signup', payload: {email:registerEmail, password:registerPassword}}, function (response){
-
-                if(!response.error){
-                    document.getElementById("tab-login").click()
-                    document.getElementById("registerForm").reset()
-
-                }
-                else{
-
-                    var text = document.createTextNode(response.error);
-                    var errorMessage = document.getElementById("registerErrorMessage")
-                    errorMessage.classList.remove("d-none")
-                    errorMessage.innerHTML = ''
-                    errorMessage.appendChild(text);
-
-                    document.getElementById("registerForm").reset()
-                }
-            })
-        }
-
-
-    })
+function getContent(){
+    var index = 3
+    var question_title_array = []
+    while (index <= 12){
+        var question_title = document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[${index}]/div[1]/div/div/div/div/div/div/div/div/div[1]/h2/span[1]/a`, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+        question_title_array.push(question_title.textContent)
+        index++
+    }
+    for (var i = 0; i < question_title_array.length; i++){
+        console.log(question_title_array[i])
+    }
 }
 
 
-window.onload = function() {
-    var user = localStorage.getItem("currentUser")
-    if(!user){
-        if(document.getElementById("mainContainer")){
-            document.getElementById("mainContainer").classList.remove("d-none")
-            document.getElementById("logout").classList.add("d-none")
-        }
-
-    }else {
-        if(document.getElementById("mainContainer")){
-            document.getElementById("mainContainer").classList.add("d-none")
-            document.getElementById("logout").classList.remove("d-none")
-        }
-
+function getCategory(){
+    var index = 1
+    if(localStorage.getItem("category_index")){
+        index = localStorage.getItem("category_index")
+    }else{
+        localStorage.setItem("category_index", index)
+        localStorage.setItem("nextCategory", true.toString())
     }
 
+    var category_name = document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div/div/div/ul/li[2]/ul/li[${index}]/a`, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+    if (localStorage.getItem("nextCategory") === "true"){
+        category_name.click()
+    }
+    localStorage.setItem("nextCategory", false.toString())
+    getNextPage()
+
+
+}
+function getNextPage(){
+    var category_index = localStorage.getItem("category_index")
+    var index = 1
+    var all_pages = document.evaluate("/html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[2]/font", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+    var number_of_page = Math.round(all_pages.textContent.replace(/[^0-9]/g,'') / 10)
+
+    if(localStorage.getItem("index")){
+        index = localStorage.getItem("index")
+    }else{
+        localStorage.setItem("index", index)
+    }
+    var until = 6
+
+    if (number_of_page < until){
+        until = 4
+    }
+
+    console.log(number_of_page)
+
+    setTimeout(function() {
+        var page = document.evaluate(`html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[2]/a[${index}]`, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+
+        if (parseInt(page.textContent) <= number_of_page){
+            page.click()
+        }
+
+        if(parseInt(page.textContent) === number_of_page){
+            category_index++
+            localStorage.setItem("category_index", category_index)
+            localStorage.setItem("nextCategory", true.toString())
+            getCategory()
+        }
+
+
+        if(index === 1){
+            index++
+        }
+        index++
+
+        if (index <= 6) {
+            localStorage.setItem("index", index)
+
+            getNextPage(index);
+        }
+        else if(parseInt(page.textContent) === number_of_page){
+            localStorage.removeItem("index")
+        }
+
+
+
+    }, 5000)
 }
 
+function main(){
 
-if(loginButton){
-    loginButton.addEventListener('click', ()=> {
+    getCategory()
+    //getNextPage();
+    //
+    getContent()
 
-    })
+
+
+
 }
+main()
 
 
-if(registerButton){
-    registerButton.addEventListener('click', ()=> {
-
-    })
-}
-
-if(logoutButton){
-    logoutButton.addEventListener('click', ()=> {
-        chrome.runtime.sendMessage({message: 'logout'}, function (response){
-            if(!response.error){
-                document.getElementById("mainContainer").classList.remove("d-none")
-                document.getElementById("logout").classList.add("d-none")
-
-                document.getElementById("loginForm").reset()
-            }
-        })
-    })
-}
 

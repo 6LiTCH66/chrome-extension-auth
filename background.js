@@ -1,3 +1,4 @@
+
 function refreshToken(){
     fetch("https://employee-webserver.herokuapp.com/auth/token", {
         method: 'POST',
@@ -11,17 +12,16 @@ function refreshToken(){
             this.startRefreshTokenTimer()
             return response.json();
         }
-
         // if any errors logout
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("initialTime");
+        localStorage.removeItem("currentUserEX");
+        localStorage.removeItem("initialTimeEX");
 
         return Promise.reject(response);
 
     }).catch(function (error) {
         // if any errors logout
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("initialTime");
+        localStorage.removeItem("currentUserEX");
+        localStorage.removeItem("initialTimeEX");
 
     });
 }
@@ -29,13 +29,13 @@ function refreshToken(){
 
 var refreshTokenTimeout;
 function startRefreshTokenTimer(){
-    if(localStorage.getItem("currentUser")){
+    if(localStorage.getItem("currentUserEX")){
         var waitTime = 840000;
         var executionTime;
-        var initialTime = localStorage.getItem("initialTime");
+        var initialTime = localStorage.getItem("initialTimeEX");
 
         if (initialTime === null) {
-            localStorage.setItem("initialTime", new Date().getTime());
+            localStorage.setItem("initialTimeEX", new Date().getTime());
             executionTime = waitTime;
         }
         else {
@@ -45,15 +45,16 @@ function startRefreshTokenTimer(){
 
         refreshTokenTimeout = setTimeout(() => {
             this.refreshToken()
-            localStorage.removeItem("initialTime")
+            localStorage.removeItem("initialTimeEX")
         }, executionTime)
     }
 }
 
 function stopRefreshTokenTimer(){
-    localStorage.removeItem("initialTime");
+    localStorage.removeItem("initialTimeEX");
     clearInterval(refreshTokenTimeout)
 }
+
 
 
 
@@ -81,8 +82,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }).then(function (data) {
 
             var userData = JSON.stringify(data).replace(/\\/g, '');
-            localStorage.setItem("currentUser", userData)
-            localStorage.setItem("initialTime", new Date().getTime());
+            localStorage.setItem("currentUserEX", userData)
+            localStorage.setItem("initialTimeEX", new Date().getTime());
             this.startRefreshTokenTimer()
 
         }).catch(function (error) {
@@ -103,8 +104,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
         }).then(function (response) {
             if (response.ok) {
-                localStorage.removeItem("currentUser");
-                localStorage.removeItem("initialTime");
+                localStorage.removeItem("currentUserEX");
+                localStorage.removeItem("initialTimeEX");
 
                 this.stopRefreshTokenTimer()
                 sendResponse({
@@ -113,6 +114,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
                 return response.json();
             }
+            localStorage.removeItem("currentUserEX");
+            localStorage.removeItem("initialTimeEX");
             return Promise.reject(response);
 
         }).catch(function (error) {
@@ -120,6 +123,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({
                 error: 'error'
             });
+
+            localStorage.removeItem("currentUserEX");
+            localStorage.removeItem("initialTimeEX");
 
         });
         return true;
@@ -154,8 +160,43 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 
+    else if(request.userMessage === "user"){
+        fetch('https://employee-webserver.herokuapp.com/api/user', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(function (response){
+            if(response.ok){
+
+                return response.json();
+            }
+
+            return Promise.reject(response);
+        }).then(function (data) {
+
+            sendResponse({
+                response: data
+            });
+
+
+        }).catch(function (error){
+
+            localStorage.removeItem("currentUserEX");
+            localStorage.removeItem("initialTimeEX");
+
+            sendResponse({
+                response: null
+            });
+        })
+
+        return true;
+    }
+
     sendResponse({});
     return true;
 })
+
 
 

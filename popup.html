@@ -127,12 +127,27 @@
 <!-- Pills content -->
 
 <div id="logout" class="d-none" style="text-align: center">
+    <table class="table" id="userInfo">
+        <thead>
+        <tr>
+            <th scope="col">User id</th>
+            <th scope="col">Login at</th>
+            <th scope="col">Logout at</th>
+            <th scope="col">Ip</th>
+            <th scope="col">Agent</th>
+            <th scope="col">Online</th>
+        </tr>
+        </thead>
+        <tbody id="tablebody">
+
+        </tbody>
+    </table>
     <button type="button" class="btn btn-primary" id="logoutButton">Logout</button>
 </div>
 
 
+<script src="popup.js"></script>
 
-<script src="Content.js"></script>
 
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js"></script>
