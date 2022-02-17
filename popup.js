@@ -20,7 +20,6 @@ if(document.getElementById('loginForm')){
 
                 }
                 else{
-
                     var text = document.createTextNode(response.error);
                     var errorMessage = document.getElementById("loginErrorMessage")
                     errorMessage.classList.remove("d-none")

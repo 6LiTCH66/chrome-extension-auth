@@ -193,6 +193,37 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         return true;
     }
+    else if(request.message === "vastused"){
+        console.log(request.payload)
+        fetch("https://employee-webserver.herokuapp.com/scraping/vastused", {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(request.payload),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(function (response) {
+            if (response.ok) {
+
+                sendResponse({
+                    vastused: null
+                });
+
+                return response.json();
+            }
+
+            return Promise.reject(response);
+
+        }).catch(function (error) {
+
+            sendResponse({
+                vastused: 'error'
+            });
+
+
+        })
+        return true
+    }
 
     sendResponse({});
     return true;
