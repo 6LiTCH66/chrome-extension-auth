@@ -17,39 +17,32 @@ function getContent(){
         var vastusedMap = new Map()
         var user_id = 1;
 
-        // default for loop
         var category_name =
             document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div/div/div/ul/li[${category_index}]/a`,
                 document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
 
-        // default for loop
         var sub_category_name =
             document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div/div/div/ul/li[${category_index}]/ul/li[${sub_category_index}]/a`,
             document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
                 .singleNodeValue.textContent.replace(/[0-9]/g, '').replace("()", "")
 
-        //default for loop
         var question_title =
             document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[${index}]/div[1]/div/div/div/div/div/div/div/div/div[1]/h2/span[1]/a`,
                 document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
 
-        // default for loop
         var question_description =
             document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[${index}]/div[1]/div/div/div/div/div/div/div/div/div[1]/div`,
                 document, null , XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent.replace(/\s+/g, " ")
 
-        // default for loop
         var question_date =
             document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[${index}]/div[1]/div/div/div/div/div/div/div/div/div[1]/h2/span[2]`,
                 document, null , XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
 
-        // map for loop
         var answer_title =
             document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[${index}]/div[1]/div/div/div/div/div/div/div/div/div[2]/h2/span`,
                 document, null , XPathResult.FIRST_ORDERED_NODE_TYPE, null)
                 .singleNodeValue.textContent.replace("Vastus:", "").split(",")
 
-        // default for loop
         var answer_description =
             document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[${index}]/div[1]/div/div/div/div/div/div/div/div/div[2]/div[1]`,
             document, null , XPathResult.FIRST_ORDERED_NODE_TYPE, null)
@@ -78,8 +71,6 @@ function getContent(){
 
         index++
     }
-
-
 
 
     for (var i = 0; i < node.length; i++){
@@ -145,7 +136,6 @@ function getNextPage(){
 
     var number_of_page = Math.ceil(all_pages.textContent.replace(/[^0-9]/g,'') / 10)
 
-    var all_category = document.querySelectorAll('li.active > ul > li')
 
     if(localStorage.getItem("index")){
         index = localStorage.getItem("index")
@@ -190,19 +180,13 @@ function getNextPage(){
             getNextPage();
         }
 
-    }, 200000)
+    }, 5000)
 
 }
 
 function main(){
-
     getCategory()
-    //getNextPage();
-    //
     getContent()
-
-
-
 
 }
 main()

@@ -16,7 +16,7 @@ if(document.getElementById('loginForm')){
                 if(!response.error){
                     document.getElementById("mainContainer").classList.add("d-none")
                     document.getElementById("logout").classList.remove("d-none")
-                    createTable()
+                    // createTable()
 
                 }
                 else{
@@ -71,37 +71,37 @@ if(document.getElementById("registerForm")){
 
     })
 }
-function createTable(){
-    chrome.runtime.sendMessage({userMessage: 'user'}, function (response){
-        if(response.response){
+// function createTable(){
+//     chrome.runtime.sendMessage({userMessage: 'user'}, function (response){
+//         if(response.response){
+//
+//             var tableRef = document.getElementById('userInfo').getElementsByTagName('tbody')[0];
+//
+//             for (let index = 0; index < response.response.length; index++){
+//
+//                 tableRef.insertRow().innerHTML =
+//                     "<th scope='row'>" + response.response[index].user_id + "</th>" +
+//                     "<td>" + response.response[index].login_at + "</td>"+
+//                     "<td>" + response.response[index].logout_at + "</td>"+
+//                     "<td>" + response.response[index].ip + "</td>"+
+//                     "<td>" + response.response[index].agent + "</td>"+
+//                     "<td>" + response.response[index].isOnline + "</td>";
+//             }
+//         }
+//         else{
+//             document.getElementById("mainContainer").classList.remove("d-none")
+//             document.getElementById("logout").classList.add("d-none")
+//         }
+//
+//     })
+// }
 
-            var tableRef = document.getElementById('userInfo').getElementsByTagName('tbody')[0];
-
-            for (let index = 0; index < response.response.length; index++){
-
-                tableRef.insertRow().innerHTML =
-                    "<th scope='row'>" + response.response[index].user_id + "</th>" +
-                    "<td>" + response.response[index].login_at + "</td>"+
-                    "<td>" + response.response[index].logout_at + "</td>"+
-                    "<td>" + response.response[index].ip + "</td>"+
-                    "<td>" + response.response[index].agent + "</td>"+
-                    "<td>" + response.response[index].isOnline + "</td>";
-            }
-        }
-        else{
-            document.getElementById("mainContainer").classList.remove("d-none")
-            document.getElementById("logout").classList.add("d-none")
-        }
-
-    })
-}
-
-function clearTable(){
-    var node = document.getElementById("tablebody");
-    while (node.hasChildNodes()) {
-        node.removeChild(node.lastChild);
-    }
-}
+// function clearTable(){
+//     var node = document.getElementById("tablebody");
+//     while (node.hasChildNodes()) {
+//         node.removeChild(node.lastChild);
+//     }
+// }
 
 
 
@@ -116,7 +116,7 @@ window.onload = function() {
         }
 
     }else {
-        createTable();
+        // createTable();
         if(document.getElementById("mainContainer")){
             document.getElementById("mainContainer").classList.add("d-none")
             document.getElementById("logout").classList.remove("d-none")
@@ -125,7 +125,6 @@ window.onload = function() {
     }
 
 }
-console.log("test")
 
 
 if(loginButton){
@@ -151,7 +150,7 @@ if(logoutButton){
 
                 document.getElementById("loginForm").reset()
 
-                clearTable()
+                // clearTable()
 
             }
         })
