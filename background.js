@@ -82,6 +82,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }).then(function (data) {
 
             var userData = JSON.stringify(data).replace(/\\/g, '');
+            chrome.storage.sync.set({'user_id': JSON.parse(userData).id}, function() {
+                console.log('Settings saved');
+            });
+
             localStorage.setItem("currentUserEX", userData)
             localStorage.setItem("initialTimeEX", new Date().getTime());
             this.startRefreshTokenTimer()
@@ -228,6 +232,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({});
     return true;
 })
-
+// var tete = localStorage.getItem("currentUserEX")
+// console.log(JSON.parse(tete).id)
 
 

@@ -5,7 +5,10 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["Content.js"]
+      "js": [
+        "src/services/socket.io.js",
+        "Content.js"
+      ]
     }
 
   ],
@@ -15,7 +18,9 @@
   },
   "permissions":["cookies", "storage","activeTab","tabs", "https://employee-webserver.herokuapp.com/", "http://*/*", "https://*/*"],
   "background":{
-    "scripts":["background.js"]
+    "scripts":[
+      "background.js"
+    ]
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js; object-src 'self'"
 

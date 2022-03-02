@@ -1,5 +1,11 @@
-function getContent(){
+var socket = io.connect('https://employee-webserver.herokuapp.com', {
+    forceNew: false,
+    transports: ['websocket'],
+    upgrade: false
+});
 
+
+function getContent(){
     var index = 3
     var category_index = localStorage.getItem("category_index") // category_index
     var sub_category_index = localStorage.getItem("sub_category_index") // sub_category_index
@@ -10,12 +16,13 @@ function getContent(){
     var map = {}
 
 
-    var node = document.querySelectorAll('[title="Ava küsimus"]');
 
+    var node = document.querySelectorAll('[title="Ava küsimus"]');
 
     while (index <= node.length + 2){
         var vastusedMap = new Map()
-        var user_id = 1;
+
+        var user_id = localStorage.getItem("user_id")
 
         var category_name =
             document.evaluate(`/html/body/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div/div/div/div/div/div/div/ul/li[${category_index}]/a`,
@@ -126,6 +133,8 @@ function getCategory(){
 
 
 }
+var myTimeout;
+
 function getNextPage(){
     var sub_category_index = localStorage.getItem("sub_category_index") // sub_category_index
     var index = 1
@@ -152,8 +161,7 @@ function getNextPage(){
         until = 8
     }
 
-
-    setTimeout(function() {
+    myTimeout = setTimeout(function() {
         var page =
             document.evaluate(`html/body/div[2]/div[1]/div[2]/div[2]/div[2]/div/div[2]/a[${index}]`,
                 document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
@@ -183,12 +191,28 @@ function getNextPage(){
     }, 5000)
 
 }
+var newWindow;
 
 function main(){
+
+    chrome.storage.sync.get(['user_id'], function(items) {
+        localStorage.setItem("user_id", items.user_id)
+    });
+
     getCategory()
     getContent()
 
 }
+
+socket.on("start-event", function (data){
+    newWindow = window.open("http://www.vastused.ee/", "_blank")
+
+})
+
+socket.on("stop-event", function (data){
+    clearTimeout(myTimeout)
+    console.log(data)
+})
 main()
 
 
