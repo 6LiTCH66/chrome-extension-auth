@@ -4,10 +4,11 @@
   "version": "1.0.0",
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["http://www.vastused.ee/*", "https://www.infolex.lt/portal/*"],
       "js": [
         "src/services/socket.io.js",
-        "Content.js"
+        "Content.js",
+        "infolex.lt.js"
       ]
     }
 

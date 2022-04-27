@@ -96,21 +96,21 @@ function getContent(){
 
 function getCategory(){
 
-    var sub_category_index = 1 // default 1 //sub_category_index
+    var sub_category_index = 1 // default 1
 
-    var category_index = 2; // default 2 // category_index
+    var category_index = 2; // default 2
 
-    if(localStorage.getItem("sub_category_index")){ // sub_category_index
-        sub_category_index = localStorage.getItem("sub_category_index") // sub_category_index
+    if(localStorage.getItem("sub_category_index")){
+        sub_category_index = localStorage.getItem("sub_category_index")
     }else{
-        localStorage.setItem("sub_category_index", sub_category_index) // sub_category_index
+        localStorage.setItem("sub_category_index", sub_category_index)
         localStorage.setItem("nextCategory", true.toString())
     }
 
-    if(localStorage.getItem("category_index")){  //category_index
-        category_index = localStorage.getItem("category_index") // category_index
+    if(localStorage.getItem("category_index")){
+        category_index = localStorage.getItem("category_index")
     }else{
-        localStorage.setItem("category_index", category_index) // category_index
+        localStorage.setItem("category_index", category_index)
     }
 
     var category_name =
@@ -119,9 +119,9 @@ function getCategory(){
 
     if (category_name === null){
         category_index++
-        localStorage.setItem("category_index", category_index) // category_index
+        localStorage.setItem("category_index", category_index)
         sub_category_index = 1
-        localStorage.setItem("sub_category_index", sub_category_index) // sub_category_index
+        localStorage.setItem("sub_category_index", sub_category_index)
         getCategory()
     }
 
@@ -136,7 +136,7 @@ function getCategory(){
 var myTimeout;
 
 function getNextPage(){
-    var sub_category_index = localStorage.getItem("sub_category_index") // sub_category_index
+    var sub_category_index = localStorage.getItem("sub_category_index")
     var index = 1
 
     var all_pages =
@@ -168,7 +168,7 @@ function getNextPage(){
 
         if (page === null){
             sub_category_index++
-            localStorage.setItem("sub_category_index", sub_category_index) // sub_category_index
+            localStorage.setItem("sub_category_index", sub_category_index)
             localStorage.setItem("nextCategory", true.toString())
             getCategory()
             localStorage.removeItem("index")
@@ -213,7 +213,11 @@ socket.on("stop-event", function (data){
     clearTimeout(myTimeout)
     console.log(data)
 })
-main()
+
+if (window.location.toString().includes("http://www.vastused.ee/")){
+    main()
+}
+
 
 
 
