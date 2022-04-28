@@ -228,6 +228,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
         return true
     }
+    else if(request.message === "testinfolex"){
+        console.log(request.payload)
+        return true
+    }
 
     sendResponse({});
     return true;
