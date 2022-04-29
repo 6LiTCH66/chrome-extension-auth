@@ -21,6 +21,10 @@ function getContent(){
     var answer_title_array = []
     var answer_date_array = []
 
+    var category_name = document.evaluate("/html/body/table/tbody/tr[2]/td[1]/table/tbody/tr/td[2]/table/tbody/tr[2]/td/table/tbody/tr/td/be/font[1]/a[3]",
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+
+
     var question_title = document.evaluate("/html/body/table/tbody/tr[2]/td[1]/table/tbody/tr/td[2]/table/tbody/tr[2]/td/table/tbody/tr/td/be/table[1]/tbody/tr/td/font/table[1]/tbody/tr/td/table/tbody/tr[2]/td/font",
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
         .singleNodeValue.textContent.replace(/\s+/g, ' ').trim()
@@ -54,34 +58,24 @@ function getContent(){
             .singleNodeValue
 
 
-
-
     }
 
-    // 03.29.2021
-
-    // var last_date = answer_date_array.pop()
-    // var new_date = new Date(last_date).getMonth() + 1 + "." + new Date(last_date).getDate() + "." + new Date(last_date).getFullYear()
-    // console.log(formatDate(new Date(last_date)))
-
-
+    vastusedMap["user_id"] = localStorage.getItem("user_id")
+    vastusedMap["category_name"] = category_name
+    vastusedMap["question_name"] = localStorage.getItem("question_name")
     vastusedMap["question_title"] = question_title
-    vastusedMap["question_date"] = question_date
+    vastusedMap["question_date"] = formatDate(new Date(question_date))
     vastusedMap["answer_title"] = answer_title_array.join(' ')
     if (answer_date_array.length > 0){
         var last_date = answer_date_array.pop()
-        // var new_date = new Date(last_date).getMonth() + 1 + "." + new Date(last_date).getDate() + "." + new Date(last_date).getFullYear()
         vastusedMap["answer_date"] = formatDate(new Date(last_date))
     }else{
         vastusedMap["answer_date"] = null
     }
 
-    vastused_array.push(vastusedMap)
 
-
-
-    chrome.runtime.sendMessage({message: "testinfolex", payload: vastused_array}, function (response){
-        if (response.testinfolex){
+    chrome.runtime.sendMessage({message: "infolex", payload: vastusedMap}, function (response){
+        if (!response.infolex){
             console.log("ok")
         }
         else{
@@ -99,57 +93,34 @@ function getContent(){
 }
 
 function getNextPage(){
-    var count_click = 0
-
-    // var index = 7
-    //
-    // if(localStorage.getItem("index")){
-    //     index = localStorage.getItem("index")
-    // }else{
-    //     localStorage.setItem("index", index)
-    // }
-
-    if(localStorage.getItem("count_click")){
-        count_click = localStorage.getItem("count_click")
-    }else{
-        localStorage.setItem("count_click", count_click)
-    }
-
 
     var next_page = document.evaluate("/html/body/table/tbody/tr[2]/td[1]/table/tbody/tr/td[2]/table/tbody/tr[2]/td/table/tbody/tr/td/be/center[1]/font",
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
 
 
     if (next_page){
-        next_page.children.item(next_page.children.length -1).click()
+        if (next_page.children.item(next_page.children.length -1).outerHTML.includes("<b>")){
+            var go_back = document.evaluate("/html/body/table/tbody/tr[2]/td[1]/table/tbody/tr/td[2]/table/tbody/tr[2]/td/table/tbody/tr/td/be/font/a[1]",
+                document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
 
-        count_click++
-        localStorage.setItem("count_click", count_click)
-
+            if (go_back){
+                go_back.click()
+            }
+        }
+        else {
+            next_page.children.item(next_page.children.length -1).click()
+        }
     }
 }
 
 function getQuestion(){
 
-    var count_click = localStorage.getItem("count_click")
-
-    var question_index = 50 // default 3
+    var question_index = 3 // default 3
 
     if (localStorage.getItem("question_index")){
         question_index = localStorage.getItem("question_index")
     }else {
         localStorage.setItem("question_index", question_index)
-    }
-
-    if (parseInt(count_click) === 3){
-        localStorage.removeItem("count_click")
-
-        var go_back = document.evaluate("/html/body/table/tbody/tr[2]/td[1]/table/tbody/tr/td[2]/table/tbody/tr[2]/td/table/tbody/tr/td/be/font/a[1]",
-            document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
-
-        if (go_back){
-            go_back.click()
-        }
     }
 
 
@@ -158,6 +129,7 @@ function getQuestion(){
             document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
 
         if (question_name){
+            localStorage.setItem("question_name", question_name.textContent)
             var question_amount = document.querySelectorAll('tr[align=center]').length // default 52
             localStorage.setItem("question_amount", question_amount)
             question_name.click()
@@ -166,6 +138,7 @@ function getQuestion(){
         if (parseInt(localStorage.getItem("question_index")) > parseInt(localStorage.getItem("question_amount")) + 1){
             getNextPage()
             localStorage.removeItem("question_index")
+            console.log("getNextPage is called")
         }
         else {
             getContent()
@@ -218,6 +191,7 @@ function getCategory(){
         localStorage.removeItem("category_index")
     }
 
+
     getQuestion()
 
 
@@ -228,7 +202,9 @@ function main(){
     // if (window.location.toString().includes("https://www.infolex.lt/")){
     //     console.log("https://www.infolex.lt/")
     // }
-
+    chrome.storage.sync.get(['user_id'], function(items) {
+        localStorage.setItem("user_id", items.user_id)
+    });
     getCategory()
 
 

@@ -228,15 +228,40 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
         return true
     }
-    else if(request.message === "testinfolex"){
+    else if(request.message === "infolex"){
         console.log(request.payload)
+
+        fetch("https://employee-webserver.herokuapp.com/info/infolex", {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(request.payload),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(function (response) {
+            if (response.ok) {
+
+                sendResponse({
+                    infolex: null
+                });
+
+                return response.json();
+            }
+
+            return Promise.reject(response);
+
+        }).catch(function (error) {
+
+            sendResponse({
+                infolex: 'error'
+            });
+        })
+
         return true
     }
 
     sendResponse({});
     return true;
 })
-// var tete = localStorage.getItem("currentUserEX")
-// console.log(JSON.parse(tete).id)
 
 
